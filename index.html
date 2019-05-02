@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Twin Stick Shooter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+</head>
+<body>
+
+    <div id="container">
+        <canvas id="my_canvas" width="1280" height="720"></canvas>
+        <div id="hud">
+            <nav>
+                 <ul>
+                     <li><div id="caja1">Play</div></li>
+                     <li><div id="caja2"></div></li>
+                     <li><div id="caja3">Exit</div></li>
+                     <li>
+                         <div>
+                             <img id= "pause" src="./assets/Hopstarter-Soft-Scraps-Button-Close.png"></img>
+                         </div> 
+                     </li>
+                 </ul>
+            </nav> 
+         </div>
+            <div id = "InvadersKilled">
+                <nav></nav>
+            </div>
+    </div>
+
+    <audio id="laser" src="./assets/laser.wav" style="display: none;"></audio>
+    
+    <script src="./src/menuAnim.js        "></script>
+    <script src="/src/input.js            "></script>
+    <script src="./src/playership.js      "></script>
+    <script src="./src/bulletpooldrawer.js"></script>
+    <script src="./src/invader.js         "></script>
+    <script src="./src/star.js            "></script>
+    <script src="./src/collisions.js      "></script>
+    <script src="./src/gameManager.js     "></script>
+    <script src="./src/code.js            "></script>
+    
+</body>
+</html>
