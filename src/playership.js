@@ -9,9 +9,9 @@ playerShip = {
         x: 0,
         y: 0
     },
-    rotation: -Math.PI * 0.5,
-    velocity: 150,
-    shotCadency: 0.12, // 1/0.2 shot per second
+    rotation: -Math.PI / 0.5, /// Apuntamos siempre hacia la derecha
+    velocity: 250,
+    shotCadency: 0.06, // 1/0.2 shot per second
     shotCadencyAux: 0,
     cannonPosition: null,
     cannonPositionTransformed: null,
@@ -100,8 +100,9 @@ playerShip = {
         this.laserSfx = document.getElementById("laser");
 
         this.position = {
-            x: (canvas.width / 2) - playerShipImg.width / 2,
-            y: canvas.height - 60
+            //x: (canvas.width / 2) - playerShipImg.width / 2,
+            x: playerShipImg.width / 2 + 100,
+            y: canvas.height - 350
         }
 
         // set the cannon position
@@ -170,19 +171,22 @@ playerShip = {
         // check world-screen bounds
         if (this.position.x > canvas.width - this.imgHalfWidth)
             this.position.x = canvas.width - this.imgHalfWidth;
+
         else if (this.position.x < this.imgHalfWidth)
             this.position.x = this.imgHalfWidth;
+
         if (this.position.y > canvas.height - this.imgHalfHeight)
             this.position.y = canvas.height - this.imgHalfHeight;
+            
         else if (this.position.y < this.imgHalfHeight)
             this.position.y = this.imgHalfHeight;
 
         // rotation (face the mouse)
-        var mouseShipVector = {
+        /*var mouseShipVector = {
             x: input.mouse.x - this.position.x,
             y: input.mouse.y - this.position.y
         };
-        this.rotation = Math.atan2(mouseShipVector.y, mouseShipVector.x);
+        this.rotation = Math.atan2(mouseShipVector.y, mouseShipVector.x);*/
 
         // cannon position transformation
         this.cannonPositionTransformed = rotate(this.position, {x: this.position.x + this.cannonPosition.x, 
@@ -204,8 +208,6 @@ playerShip = {
                 this.laserSfx.currentTime = 0.22;
                 this.laserSfx.play();
             }
-           
-           
 
             // reset the cadency aux timer
             this.shotCadencyAux = this.shotCadency;

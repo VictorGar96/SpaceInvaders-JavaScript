@@ -2,11 +2,11 @@
 function Star ()
 {
     this.position = {
-        x: Math.random() * canvas.width,
+        x: Math.random() * canvas.width * 1000,
         y: Math.random() * canvas.height
     },
     this.radius = 1 + Math.random() * 3,
-    this.velocity = 20 + Math.random() * 20,
+    this.velocity = -400,
     this.onCollision = false,
     
     this.Draw = function (ctx) {
@@ -23,6 +23,6 @@ function Star ()
     
     this.Update = function (deltaTime) {
         this.position.x += this.velocity * deltaTime;
-        this.position.x = this.position.x % canvas.width;
+        //this.position.x = this.position.x % canvas.width;
     }
 }

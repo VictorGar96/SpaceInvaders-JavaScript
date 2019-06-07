@@ -44,14 +44,14 @@ function Invader (img, initialPosition, initialRotation, velocity, rotVelocity)
     };
 
     this.Start = function () {
+       
         this.rotation = this.initialRotation;
-        
         this.radius   = 20;//Math.sqrt((this.imgHalfWidth * this.imgHalfWidth) + (this.imgHalfHeight * this.imgHalfHeight));
-
         this.radius2  = this.radius * this.radius;
     }
 
     this.Update = function (deltaTime) {
+        
         // movement towars its rotation
 
          // rotation (face the mouse)
@@ -60,8 +60,6 @@ function Invader (img, initialPosition, initialRotation, velocity, rotVelocity)
             y: playerShip.position.y - this.position.y
         };
 
-        
-
         var movement = {
             x: Math.cos(this.rotation) * this.velocity,
             y: Math.sin(this.rotation) * this.velocity
@@ -69,36 +67,40 @@ function Invader (img, initialPosition, initialRotation, velocity, rotVelocity)
         
         this.position.x += movement.x * deltaTime;
         this.position.y += movement.y * deltaTime;
-        
+         
         // Rotation
-        //this.rotation += this.rotVelocity * PI2 * deltaTime;
+        this.rotation += .118 * PI2 / 2 * deltaTime;
         
+        //-------------------------------------------------------------
+
         // Check world limits
-        if (this.position.x >= canvas.width) {
+        /*if (this.position.x >= canvas.width) {
             // update rotation
             this.rotation = Math.atan2(movement.y, -movement.x);
             
             this.position.x = canvas.width - 1;
         }
-        else if (this.position.x <= 0.0) {
+        else */if (this.position.x <= 0.0) {
             // update rotation
             this.rotation = Math.atan2(movement.y, -movement.x);
             
             this.position.x = 1;
         }
         
-        if (this.position.y >= canvas.height) {
-            // update rotation
-            this.rotation = Math.atan2(-movement.y, movement.x);
+        //-------------------------------------------------------------
+
+        // if (this.position.y >= canvas.height) {
+        //     // update rotation
+        //     this.rotation = Math.atan2(-movement.y, movement.x);
             
-            this.position.y = canvas.height - 1;
-        }
-        else if (this.position.y <= 0.0) {
-            // update rotation
-            this.rotation = Math.atan2(-movement.y, movement.x);
+        //     this.position.y = canvas.height - 1;
+        // }
+        // else if (this.position.y <= 0.0) {
+        //     // update rotation
+        //     this.rotation = Math.atan2(-movement.y, movement.x);
             
-            this.position.y = 1;
-        }
+        //     this.position.y = 1;
+        // }
 
         // update the collider position and rotation
         for (var i = 0; i < this.collider.originalPolygon.length; i++)
@@ -130,24 +132,24 @@ function Invader (img, initialPosition, initialRotation, velocity, rotVelocity)
         ctx.drawImage(this.img, -this.imgHalfWidth, -this.imgHalfHeight);
         ctx.restore();
 
-        ctx.beginPath();
-        ctx.fillStyle = 'rgba(0, 255, 0, 0.2)';
-        ctx.arc(0, 0, this.radius, 0, 2 * Math.PI);
-        ctx.fill();
+        // ctx.beginPath();
+        // ctx.fillStyle = 'rgba(0, 255, 0, 0.2)';
+        // ctx.arc(0, 0, this.radius, 0, 2 * Math.PI);
+        // ctx.fill();
 
         ctx.restore();
 
         // draw the collider polygon
-        ctx.strokeStyle = "red";
-        ctx.beginPath();
-        ctx.moveTo(this.collider.transformedPolygon[0].x, this.collider.transformedPolygon[0].y);
-        for (var i = 1; i < this.collider.transformedPolygon.length; i++)
-        {
-            ctx.lineTo(this.collider.transformedPolygon[i].x, this.collider.transformedPolygon[i].y);
-        }
-        ctx.lineTo(this.collider.transformedPolygon[0].x, this.collider.transformedPolygon[0].y);
-        ctx.stroke();
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.fill();
+        // ctx.strokeStyle = "red";
+        // ctx.beginPath();
+        // ctx.moveTo(this.collider.transformedPolygon[0].x, this.collider.transformedPolygon[0].y);
+        // for (var i = 1; i < this.collider.transformedPolygon.length; i++)
+        // {
+        //     ctx.lineTo(this.collider.transformedPolygon[i].x, this.collider.transformedPolygon[i].y);
+        // }
+        // ctx.lineTo(this.collider.transformedPolygon[0].x, this.collider.transformedPolygon[0].y);
+        // ctx.stroke();
+        // ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        // ctx.fill();
     }
 }

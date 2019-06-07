@@ -27,12 +27,11 @@ invadersKilled.style.fontSize = "2.5em";
 // Variable contador de invaders que hemos matado
 var _invadersKilled           = 0;
 
-var playerShipImg, invaderImg, bulletImg;
+var playerShipImg, invaderImg, invader2Img, invader3Img, bulletImg;
 
 var actualCollisions = 0;
 
 var collisionMode = 0;
-
 
 window.requestAnimationFrame = (function (evt) {
     return window.requestAnimationFrame       ||
@@ -43,7 +42,6 @@ window.requestAnimationFrame = (function (evt) {
         	window.setTimeout(callback, targetDT);
     	};
 }) ();
-
 
 canvas = document.getElementById("my_canvas");
 if (canvas)
@@ -59,23 +57,28 @@ if (canvas)
         bulletImg.src    = "./assets/bullet.png";
         bulletImg.onload = function () 
         {
-
             // load the player ship image
             playerShipImg = new Image();
             playerShipImg.src = "./assets/ship1.png";
             playerShipImg.onload = function () 
             {
-
                 // load the invader image
                 invaderImg     = new Image();
                 invaderImg.src = "./assets/invader1.png";
                 invaderImg.onload = function () 
                 {
-                        //Start the game
-                        Start();
-
-                        //setInterval(Loop, deltaTime);
-                        Loop();
+                    invader2Img = new Image();
+                    invader2Img.src = "./assets/invader2.png";
+                    invader2Img.onload = function()
+                    {
+                        invader3Img = new Image();
+                        invader3Img.src = "./assets/invader3.png";
+                        invader3Img.onload = function()
+                        {
+                            Start();
+                            Loop();
+                        }
+                    }
                 }
             }
         }
@@ -91,33 +94,54 @@ function Start ()
 
     // create the stars
     stars = new Array();
-    for (var i = 0; i < 100; i++)
+    for (var i = 0; i < 10000; i++)
     {
         var star = new Star();
         // add the new star to the stars array
         stars.push(star);
-    }
+    }  
 
     // create enemies
     invaders = new Array();
-    for (var i = 0; i < 10; i++)
+    for (var i = 0; i < 5; i++)
     {
         var invader = new Invader
         (
             invaderImg, // img
-            {x: Math.random() * canvas.width  , 
-             y: Math.random() * canvas.height}, // initialPosition
-                Math.random() * Math.PI       , // initialRotation
-            20+(Math.random() * 20)           , // velocity
-            0.5*Math.random()                   // rotVelocity
+            {x:   Math.random() * canvas.width  , 
+             y:   Math.random() * canvas.height}, // initialPosition
+                  Math.random() * Math.PI       , // initialRotation
+            20 + (Math.random() * 20)           , // velocity
+            0.5 * Math.random()                   // rotVelocity
         );
 
-               invader.Start();
+        var invader2 = new Invader2
+        (
+            invader2Img, 
+            {x:   Math.random() * canvas.width  , 
+             y:   Math.random() * canvas.height}, // initialPosition
+                  Math.random() * Math.PI       , // initialRotation
+            20 + (Math.random() * 20)           , // velocity
+            0.5 * Math.random()                   // rotVelocity
+        );
+        var invader3 = new Invader3
+        (
+            invader3Img, 
+            {x:   Math.random() * canvas.width  , 
+             y:   Math.random() * canvas.height}, // initialPosition
+                  Math.random() * Math.PI       , // initialRotation
+            20 + (Math.random() * 20)           , // velocity
+            0.5 * Math.random()                   // rotVelocity
+        );
+        invader.Start();
+        invader2.Start();
+        invader3.Start();
         invaders.push(invader);
+        invaders.push(invader2);
+        invaders.push(invader3);
     }
     //Create the game manager
     gameManager = new GameManager();
-
 }
 
 function Loop ()
@@ -185,10 +209,15 @@ function Update (deltaTime)
     invaders.forEach(function(invader) {
         invader.Update(deltaTime);
     });
+    invaders.forEach(function(invader2) {
+        invader2.Update(deltaTime);
+    });
+    invaders.forEach(function(invader3) {
+        invader3.Update(deltaTime);
+    });
     
     // check for star-invader collisions
     actualCollisions = 0;
-
 
     // first point inside circle then inside polygon
     for (let i = 0; i < playerShip.bulletPool.bulletArray.length; i++)
@@ -251,6 +280,15 @@ function Draw ()
     // invaders
     invaders.forEach(function(invader) {
         invader.Draw(ctx);
+        //invader2.Draw(ctx);
+    });
+    invaders.forEach(function(invader2) {
+        //invader.Draw(ctx);
+        invader2.Draw(ctx);
+    });
+    invaders.forEach(function(invader3) {
+        //invader.Draw(ctx);
+        invader3.Draw(ctx);
     });
 
     // player ship

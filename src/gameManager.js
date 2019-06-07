@@ -7,18 +7,20 @@ class GameManager
         this.timeToCreateEnemy    =                      2; //milliseconds
         this.timeToCreateEnemyAux = this.timeToCreateEnemy;
 
+        /// Cambiar 
         this.spawnPoints = [
-            {x: 10,                y:                 10},
-            {x: canvas.width - 10, y:                 10},
-            {x: canvas.width - 10, y: canvas.height - 10},
-            {x: 10,                y: canvas.height - 10},
+
+            {x: canvas.width,   y: Math.random() * canvas.height},
+            {x: canvas.width,   y: Math.random() * canvas.height +  80},
+            {x: canvas.width,   y: Math.random() * canvas.height - 117},
+            {x: canvas.width,   y: Math.random() * canvas.height - 113},
 
         ];
     }
 
     Update(deltaTime) 
     {
-        this.timeToCreateEnemyAux -= deltaTime;
+        this.timeToCreateEnemyAux -= deltaTime * .5;
 
         if(this.timeToCreateEnemyAux <= 0)
         {
@@ -31,12 +33,41 @@ class GameManager
                     y: this.spawnPoints[rndIndex].y
                 },
                  // img
-                Math.random() * Math.PI,  // initialRotation
-                20 + (Math.random() * 20), // velocity
+                -Math.PI / 0.5,  // initialRotation
+                -450, // velocity
                 0.5 * Math.random() // rotVelocity
             );
+            let invader2  = new Invader2
+            (
+                invader2Img,
+                {
+                    x: this.spawnPoints[rndIndex].x,
+                    y: this.spawnPoints[rndIndex].y
+                },
+                // img
+                Math.PI / 0.5,  // initialRotation 
+                -450, // velocity
+                0.001 // rotVelocity
+            );
+            let invader3  = new Invader3
+            (
+                invader3Img,
+                {
+                    x: this.spawnPoints[rndIndex].x,
+                    y: this.spawnPoints[rndIndex].y
+                },
+                // img
+                Math.PI / 0.5,  // initialRotation 
+                -450, // velocity
+                -0.5 * Math.random() // rotVelocity
+            );
+
             invader.Start();
             this.enemies.push(invader);
+            invader2.Start();
+            this.enemies.push(invader2);
+            invader3.Start();
+            this.enemies.push(invader3);
 
             //reset the counter
             this.timeToCreateEnemyAux = this.timeToCreateEnemy;
