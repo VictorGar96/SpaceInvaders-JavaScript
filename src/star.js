@@ -1,4 +1,5 @@
 
+/// Creamos las estrellas y les aplicamos una velocida en negativo para simular que nos estamos moviendo
 function Star ()
 {
     this.position = {

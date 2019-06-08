@@ -16,7 +16,12 @@ playerShip = {
     cannonPosition: null,
     cannonPositionTransformed: null,
 
+    currentHealth : 0,
+
+    dead : false,
+
     laserSfx: null,
+    music: null,
 
     bulletPool: {
         bulletArray: [],
@@ -97,10 +102,12 @@ playerShip = {
         this.imgHalfWidth = this.img.width / 2;
         this.imgHalfHeight = this.img.height / 2;
 
+        // Efecto de sonido de disparar y música
         this.laserSfx = document.getElementById("laser");
-
+        this.music = document.getElementById("music");
+       
         this.position = {
-            //x: (canvas.width / 2) - playerShipImg.width / 2,
+            //x: (canvas.width / 2) - musiImg.width / 2,
             x: playerShipImg.width / 2 + 100,
             y: canvas.height - 350
         }
@@ -108,15 +115,18 @@ playerShip = {
         // set the cannon position
         this.cannonPosition = {
             x: 0,
-            y: -this.img.width / 2 + bulletImg.width / 2
+            y: -this.img.width / 2 + bulletImg.width / 2 - 7
         }
         this.cannonPositionTransformed = {
             x: 0,
-            y: -this.img.width / 2 + bulletImg.width / 2
+            y: -this.img.width / 2 + bulletImg.width / 2 - 7
         }
 
         // init the bullet pool
         this.bulletPool.Start();
+
+       // this.animation.Start();
+
     },
 
     Update: function (deltaTime) {
@@ -202,24 +212,41 @@ playerShip = {
             bullet.velocity   = 1000;
             bullet.active     = true;
 
+            // Reproducimos el sonido en caso de que esté activo
             if(!sound)
             {
                 // play the sfx
                 this.laserSfx.currentTime = 0.22;
                 this.laserSfx.play();
+                
             }
-
+           
             // reset the cadency aux timer
             this.shotCadencyAux = this.shotCadency;
         }
+        
+        // Reproducimos el sonido en caso de que esté activo
+        if(!sound)
+            this.music.play();
+        else
+            this.music.pause();
 
         // update the bullet pool
         this.bulletPool.Update(deltaTime);
+
+        /// Reproducimos la animación de muerte
+        //this.animation.Update(deltaTime);
     },
 
     Draw: function (ctx) {
         // draw the bullets
         this.bulletPool.Draw(ctx);
+
+        //this.animation.Draw(ctx);
+
+        //----------------------------------------------
+        //background.Draw(ctx);
+        
 
         ctx.save();
 
@@ -232,6 +259,8 @@ playerShip = {
         ctx.strokeRect(-this.imgHalfWidth, -this.imgHalfHeight, this.img.width, this.img.height);
 
         ctx.drawImage(this.img, -this.imgHalfWidth, -this.imgHalfHeight);
+
+        //ctx.animation.Draw(ctx);
 
         ctx.restore();
 
@@ -249,28 +278,27 @@ playerShip = {
     }
 };
 
-function createBullet()
-{
-    this.index = -1;
-    this.active = false;
-    this.position = { x: 0, y: 0 };
-    this.rotation = 0;
-    this.velocity = 0;
-    this.damage = 0;
-    this.sprite = null;
+// function createBullet()
+// {
+//     this.index = -1;
+//     this.active = false;
+//     this.position = { x: 0, y: 0 };
+//     this.rotation = 0;
+//     this.velocity = 0;
+//     this.damage = 0;
+//     this.sprite = null;
 
-    this.Update = function(deltaTime)
-    {
-        this.position.x += this.velocity * deltaTime * Math.cos(this.rotation);
-        this.position.y += this.velocity * deltaTime * Math.sin(this.rotation);
-    };
+//     this.Update = function(deltaTime)
+//     {
+//         this.position.x += this.velocity * deltaTime * Math.cos(this.rotation);
+//         this.position.y += this.velocity * deltaTime * Math.sin(this.rotation);
+//     };
 
-    this.Draw = function(ctx)
-    {
-        ctx.drawImage(this.sprite, this.position.x, this.position.y);
-    };
-}
-
+//     this.Draw = function(ctx)
+//     {
+//         ctx.drawImage(this.sprite, this.position.x, this.position.y);
+//     };
+// }
 
 function createBullet()
 {
@@ -306,4 +334,4 @@ createBullet.prototype.Draw = function(ctx)
 
     ctx.restore();
 
-};
+}

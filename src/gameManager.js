@@ -7,13 +7,19 @@ class GameManager
         this.timeToCreateEnemy    =                      2; //milliseconds
         this.timeToCreateEnemyAux = this.timeToCreateEnemy;
 
-        /// Cambiar 
+        /// Puntos de spawn
         this.spawnPoints = [
 
             {x: canvas.width,   y: Math.random() * canvas.height},
             {x: canvas.width,   y: Math.random() * canvas.height +  80},
             {x: canvas.width,   y: Math.random() * canvas.height - 117},
             {x: canvas.width,   y: Math.random() * canvas.height - 113},
+            {x: canvas.width,   y: Math.random() * canvas.height - 100},
+            {x: canvas.width,   y: Math.random() * canvas.height - 120},
+            {x: canvas.width,   y: Math.random() * canvas.height - 113},
+            {x: canvas.width,   y: Math.random() * canvas.height - 128},
+            {x: canvas.width,   y: Math.random() * canvas.height - 132},
+
 
         ];
     }
@@ -37,17 +43,17 @@ class GameManager
                 -450, // velocity
                 0.5 * Math.random() // rotVelocity
             );
-            let invader2  = new Invader2
+            
+            let invader2 = new Invader2
             (
                 invader2Img,
                 {
                     x: this.spawnPoints[rndIndex].x,
                     y: this.spawnPoints[rndIndex].y
                 },
-                // img
-                Math.PI / 0.5,  // initialRotation 
-                -450, // velocity
-                0.001 // rotVelocity
+                -0.5,  // initialRotation 
+                450, // velocity
+                0.5 * Math.random()// rotVelocity
             );
             let invader3  = new Invader3
             (
@@ -63,15 +69,17 @@ class GameManager
             );
 
             invader.Start();
-            this.enemies.push(invader);
+            invaders.push(invader);
             invader2.Start();
-            this.enemies.push(invader2);
+            invaders.push(invader2);
             invader3.Start();
-            this.enemies.push(invader3);
+            invaders.push(invader3);
+          
 
             //reset the counter
             this.timeToCreateEnemyAux = this.timeToCreateEnemy;
-            this.timeToCreateEnemy   *= 0.95;
+            if(this.timeToCreateEnemy > 0.8)
+                this.timeToCreateEnemy  *= 0.95
         }
     }
 }

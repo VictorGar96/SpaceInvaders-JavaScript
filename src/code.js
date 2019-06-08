@@ -1,4 +1,5 @@
 
+// Constantes
 const PI2 = Math.PI * 2;
 const PIH = Math.PI * 0.5;
 var canvas;
@@ -21,17 +22,49 @@ var playerShip ;
 var stars      ;
 var invaders   ;
 
+// Vida y daño recibido
+var maxHealth = 100;
+var damage = 10;
+
+// Variable para comprobar si esta muerto el jugador
+var dead = false;
+
+// Variable para comprobar si ha terminado la animación
+var animFinished = false;
+
+// Referencia a una cámara
+var camera = null;
+
 // Variable para referenciar elemento de html
 var invadersKilled            = document.getElementById("InvadersKilled");
 invadersKilled.style.fontSize = "2.5em";
+
 // Variable contador de invaders que hemos matado
 var _invadersKilled           = 0;
 
-var playerShipImg, invaderImg, invader2Img, invader3Img, bulletImg;
+// Efectos de sonido
+var deadSfx          = null;
+var invaderKilledSfx = null;
+var damageSfx        = null;
+var music            = null;
 
+/// Referencia a la barra de vida creada en html
+var healthBar = null;
+
+// Imágenes
+var playerShipImg, invaderImg, invader2Img, invader3Img, bulletImg, animImg;
+var p1Img, p2Img, p3Img;
+
+var animImg = new Image();
+animImg.src = "./assets/anim.png"
+
+// Número de colisiones
 var actualCollisions = 0;
-
 var collisionMode = 0;
+
+// Imágenes de particleSystem
+var smoke, smoke2;
+var particleSystem;
 
 window.requestAnimationFrame = (function (evt) {
     return window.requestAnimationFrame       ||
@@ -52,6 +85,13 @@ if (canvas)
         SetupKeyboardEvents();
         SetupMouseEvents();
         
+        p1Img = new Image();
+        p1Img.src = "./assets/p1.png"; 
+        // p2Img = new Image();
+        // p2Img.src = "./assets/p2.png"; 
+        // p3Img = new Image();
+        // p3Img.src = "./assets/p3.png";
+
         // load the bullet image
         bulletImg        = new Image();
         bulletImg.src    = "./assets/bullet.png";
@@ -67,19 +107,31 @@ if (canvas)
                 invaderImg.src = "./assets/invader1.png";
                 invaderImg.onload = function () 
                 {
+                    // load the invader2 image
                     invader2Img = new Image();
                     invader2Img.src = "./assets/invader2.png";
                     invader2Img.onload = function()
                     {
+                        // load the invader3 image
                         invader3Img = new Image();
                         invader3Img.src = "./assets/invader3.png";
                         invader3Img.onload = function()
                         {
-                            Start();
-                            Loop();
+                            smoke = new Image();
+                            smoke.src = "./assets/smoke.png"
+                            smoke.onload = function()
+                            {
+                                smoke2 = new Image();
+                                smoke2.src = "./assets/smoke.png"
+                                smoke2.onload = function()
+                                {
+                                    Start();
+                                    Loop();
+                                }
+                            }
                         }
                     }
-                }
+                } 
             }
         }
     }
@@ -89,8 +141,20 @@ function Start ()
 {
     console.log("Start");
 
+    // referencias a los sonidos
+    healthBar        = document.getElementById("bar");
+    deadSfx          = document.getElementById("dead");
+    invaderKilledSfx = document.getElementById("invaderKilled");
+    damageSfx        = document.getElementById("damage");
+   
     // create the player ship
     playerShip.Start();
+
+    // Inicializamos la vida del player a maxHealth
+    playerShip.currentHealth = maxHealth;
+
+    //camera = new Camera(playerShip);
+    //camera.Start();
 
     // create the stars
     stars = new Array();
@@ -100,48 +164,33 @@ function Start ()
         // add the new star to the stars array
         stars.push(star);
     }  
-
+    
     // create enemies
     invaders = new Array();
-    for (var i = 0; i < 5; i++)
+    for (var i = 0; i < 10; i++)
     {
         var invader = new Invader
         (
             invaderImg, // img
             {x:   Math.random() * canvas.width  , 
-             y:   Math.random() * canvas.height}, // initialPosition
-                  Math.random() * Math.PI       , // initialRotation
-            20 + (Math.random() * 20)           , // velocity
-            0.5 * Math.random()                   // rotVelocity
-        );
-
-        var invader2 = new Invader2
-        (
-            invader2Img, 
-            {x:   Math.random() * canvas.width  , 
-             y:   Math.random() * canvas.height}, // initialPosition
-                  Math.random() * Math.PI       , // initialRotation
-            20 + (Math.random() * 20)           , // velocity
-            0.5 * Math.random()                   // rotVelocity
-        );
-        var invader3 = new Invader3
-        (
-            invader3Img, 
-            {x:   Math.random() * canvas.width  , 
-             y:   Math.random() * canvas.height}, // initialPosition
-                  Math.random() * Math.PI       , // initialRotation
-            20 + (Math.random() * 20)           , // velocity
-            0.5 * Math.random()                   // rotVelocity
-        );
-        invader.Start();
-        invader2.Start();
-        invader3.Start();
-        invaders.push(invader);
-        invaders.push(invader2);
-        invaders.push(invader3);
+                y:   Math.random() * canvas.height}, // initialPosition
+                Math.random() * Math.PI       , // initialRotation
+                20 + (Math.random() * 20)           , // velocity
+                0.5 * Math.random()                   // rotVelocity
+                );
+                
+                invader.Start();
+                
+                invaders.push(invader);
+                
     }
     //Create the game manager
     gameManager = new GameManager();
+    //background.Start();
+
+    // ParticleSystem
+    particleSystem = new ParticleSystem(200);
+
 }
 
 function Loop ()
@@ -209,12 +258,6 @@ function Update (deltaTime)
     invaders.forEach(function(invader) {
         invader.Update(deltaTime);
     });
-    invaders.forEach(function(invader2) {
-        invader2.Update(deltaTime);
-    });
-    invaders.forEach(function(invader3) {
-        invader3.Update(deltaTime);
-    });
     
     // check for star-invader collisions
     actualCollisions = 0;
@@ -224,19 +267,41 @@ function Update (deltaTime)
     {
         let bullet = playerShip.bulletPool.bulletArray[i];
 
+        /// Compruebo si colisiona un invader con playerShip y resto vida, a continuación elimino el invader
+        for (var j = 0; j < invaders.length; j++)
+        {
+            if (PointInsideCircle(invaders[j].position, invaders[j].radius2, playerShip.position))
+            {
+                //maxHealth -= 10;
+                //Elimina un elemento de la array que queramos.
+                invaders.splice(j, 1);
+                j--;
+                lowerHealthBar(damage);             
+
+            }
+        }
         if(bullet.active)
         {
             for (var j = 0; j < invaders.length; j++)
             {
+                
                 // point inside circle collision
                 if (PointInsideCircle(invaders[j].position, invaders[j].radius2, bullet.position))
                 {
+
                     // point inside polygon collision
                     if (CheckCollisionPolygon(bullet.position, invaders[j].collider.transformedPolygon))
                     {
                         //Elimina un elemento de la array que queramos.
                         invaders.splice(j, 1);
                         j--;
+                        
+                        /// Repreducir sonido en caso de que este activo
+                        if(!sound)
+                            invaderKilledSfx.play();
+                        else
+                            invaderKilledSfx.pause();
+                
                         // Cada vez que desactivamos un invader sumamos 1 a la variable contador
                         _invadersKilled++;
 
@@ -254,10 +319,20 @@ function Update (deltaTime)
             }
         }
     }
-        // reset the onCollision state of the star
-        // stars[i].onCollision = false;
 
-        gameManager.Update(deltaTime);
+    // reset the onCollision state of the star
+    // stars[i].onCollision = false;
+
+    //camera.Update(deltaTime);
+
+    gameManager.Update(deltaTime);
+
+    // Posición de ParticleSystem
+    particleSystem.origin.x = playerShip.position.x;
+    particleSystem.origin.y = playerShip.position.y;
+
+    // Llamamos al update de particleSystem
+    particleSystem.Update(deltaTime);
 }
 
 function Draw ()
@@ -265,37 +340,46 @@ function Draw ()
     // clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    //background.Draw(ctx);
+    
     // background gradient
     var grd = ctx.createLinearGradient(0, 0, 0, canvas.height);
     grd.addColorStop(0.0, "black"  );
     grd.addColorStop(0.8, "#2b3f65");
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+    
+    //ctx.translate(-camera.position.x, -camera.position.y);
+    
     // stars
     stars.forEach(function(star) {
         star.Draw(ctx);
     });
-
+    
     // invaders
     invaders.forEach(function(invader) {
         invader.Draw(ctx);
         //invader2.Draw(ctx);
     });
-    invaders.forEach(function(invader2) {
-        //invader.Draw(ctx);
-        invader2.Draw(ctx);
-    });
-    invaders.forEach(function(invader3) {
-        //invader.Draw(ctx);
-        invader3.Draw(ctx);
-    });
-
+    
     // player ship
+    if(!dead)
     playerShip.Draw(ctx);
-
+    
     // bullet pool
     BulletPoolDrawer(ctx);
+    
+    if(dead)
+    {
+        //ctx.drawImage;
+        //anim(ctx);
+        animFinished = true;
+        
+    }
+    
+    // Pintamos el particleSystem
+    particleSystem.Draw(ctx);
+    ctx.restore();
 
     // FPS
     ctx.fillStyle = "white";
@@ -304,7 +388,8 @@ function Draw ()
 
     ctx.fillText('Total invaders:   ' +  invaders.length, 10, 110);
     ctx.fillText('Total collisions: ' + actualCollisions, 10, 125);
-    
+    ctx.fillText('Health: ' + playerShip.currentHealth, 10, 150);
+ 
 }
 
 // rotate the point given (pointCoord) the angle towards the origCoord
@@ -323,3 +408,42 @@ function rotate (origCoord, pointCoord, angle)
     };
 }
 
+/// Función donde restamos vida al player
+function lowerHealthBar(dam)
+{
+    if(playerShip.currentHealth > 0)
+    {
+        /// Repreducir sonido en caso de que este activo
+        if(!sound)
+            damageSfx.play();
+        else
+            damageSfx.pause();
+    
+        // Restamos dam al player
+        playerShip.currentHealth -= dam;
+        // Bajamos el width de la barra de vida
+        healthBar.style.width = playerShip.currentHealth + "%";
+    }   
+    /// si la vida es menos o igual a 0
+    if(playerShip.currentHealth <= 0)
+    {
+        /// Repreducir sonido en caso de que este activo
+        if(!sound)
+            deadSfx.play();
+        else
+            deadSfx.pause();
+
+        // indicamos que ha muerto el player para reproducir la animación
+        dead = true;
+        /// TODO: añadir animación
+        //playerShip.a
+        // Si ha terminado la animación reseteamos el juego.
+        if(animFinished)
+        {
+            window.alert("You died :_(");
+            location.reload();
+        }
+        
+    }
+    
+}

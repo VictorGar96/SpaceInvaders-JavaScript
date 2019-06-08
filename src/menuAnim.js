@@ -8,6 +8,7 @@ var image    = document.getElementById("pause"   )   ;
 var playB    = document.getElementById("caja1"   )   ;
 var exit     = document.getElementById("caja3"   )   ;
 var _sound   = document.getElementById("caja2"   )   ;
+  
 
 // añadimos el evento deseado a  las variables creadas anteriormente
  image.addEventListener("click", Menu       );
@@ -29,6 +30,7 @@ function Menu()
     }
     else
     {
+        
         menu.style.top = "-385px";
         image.src      = "./assets/Pause_.png";
         gamePaused;
@@ -38,12 +40,14 @@ function Menu()
     gamePaused = !gamePaused;
 }
 
+// Cerrar el menu
 function closeWindow()
 {
    alert("La ventana se va a cerrar.");
    window.close(); 
 }
 
+// Activar/desactivar Sonido
 function Sound()
 {
     if(sound)

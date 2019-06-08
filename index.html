@@ -24,24 +24,37 @@
                      </li>
                  </ul>
             </nav> 
-         </div>
-            <div id = "InvadersKilled">
-                <nav></nav>
+        </div>
+            <div id = "Bars">
+                <div id = "InvadersKilled">
             </div>
+            <div id = "HealthBar">
+                <div id = "bar"> </div>
+            </div>
+        </div>
     </div>
 
-    <audio id="laser" src="./assets/laser.wav" style="display: none;"></audio>
+    <audio id="laser"         src="./assets/laser.wav"           style="display: none;"></audio>
+    <audio id="dead"          src="./assets/explosion.wav"       style="display: none;"></audio>
+    <audio id="invaderKilled" src="./assets/invaderkilled.wav"   style="display: none;"></audio>
+    <audio id="damage"        src="./assets/damage.wav"          style="display: none;"></audio>
+    <audio id="music"         src="./assets/spaceinvaders1.mpeg" style="display: none;"></audio>
+
     
     <script src="./src/menuAnim.js        "></script>
     <script src="/src/input.js            "></script>
     <script src="./src/playership.js      "></script>
     <script src="./src/bulletpooldrawer.js"></script>
+    <script src="./src/animation.js       "></script>    
     <script src="./src/invader.js         "></script>
-    <script src="./src/invader2.js         "></script>
-    <script src="./src/invader3.js         "></script>
+    <script src="./src/invader2.js        "></script>
+    <script src="./src/invader3.js        "></script>
+    <script src="./src/camera.js          "></script>
     <script src="./src/star.js            "></script>
+    <script src="./src/particleSystem.js  "></script>
     <script src="./src/collisions.js      "></script>
     <script src="./src/gameManager.js     "></script>
+    <script src="./src/background.js      "></script>
     <script src="./src/code.js            "></script>
     
 </body>

@@ -81,6 +81,34 @@ li {
                       0 20px 20px rgba( 0,  0,  0,   .15 );
     
 }
+#Bars {
+
+    height: 0px;
+    width: 100%;
+    padding: 0%;
+    position: relative;
+}
+
+#HealthBar{
+
+    background-color:   rgb(255, 235, 235);
+    position:           relative;
+    top:                7px;
+    left:               150px;
+    width:              200px;
+    height:             20px;
+    padding:            3px;
+    border:             solid 1px #aaa;
+
+}
+
+#bar {
+    background-color: rgb(160, 51, 51);
+    width:      100%;
+    height:     20px;
+    position:   relative;
+    transition: width .5s linear;
+}
 
 /* Evento al que se suscribe para darle la animación */
 .animationKill {
